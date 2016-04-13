@@ -1,0 +1,117 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault</title>
+  <link rel="stylesheet" href="deps/bootstrap-3.3.6.min.css">
+  <link rel="stylesheet" href="vault.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Vault Web</a>
+      </div>
+      <div class="collapse navbar-collapse" id="navbar">
+        <ul class="nav navbar-nav">
+          <li><a href="#" data-bind="click: apiHealth" data-toggle="modal" data-target="#vaultHealthModal">Health</a></li>
+          <li><a href="#" data-bind="click: apiToken" data-toggle="modal" data-target="#vaultTokenModal">Token</a></li>
+        </ul>
+        <form data-bind="submit: reloadAll" class="navbar-form navbar-right">
+          <div class="form-group">
+            <label for="vaultEndpoint">Vault Endpoint</label>
+            <input data-bind="value: endpoint" id="vaultEndpoint" type="text" class="form-control" placeholder="Vault DNS">
+          </div>
+          <div class="form-group">
+            <label for="vaultToken">Vault Token</label>
+            <input data-bind="value: token" id="vaultToken" type="password" class="form-control" placeholder="Vault Token">
+          </div>
+          <button type="submit" class="btn btn-default">Load Secrets</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <div data-bind="foreach: secrets()">
+      <div class="row">
+        <div data-bind="text: $data.path()" class="col-md-4 secret-name"></div>
+        <div class="col-md-8">
+          <form data-bind="foreach: $data.secrets()" class="form-horizontal">
+            <div class="form-group">
+              <label data-bind="attr: {for: $data.id()}, text: $data.name()" class="control-label col-sm-3"></label>
+              <div class="col-sm-9">
+                <div class="input-group">
+                  <input data-bind="attr: {'aria-describedby': $data.id(), type: $data.fieldType(), id: $data.id()}, value: $data.secret()" class="form-control">
+                  <span class="input-group-btn">
+                    <button data-bind="text: buttonText(), click: $data.toggleVisible(this)" class="btn btn-danger btn-hide-show" type="button"></button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal fade" id="vaultHealthModal" tabindex="-1" role="dialog" aria-labelledby="vaultHealthLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="vaultHealthLabel">Vault System Health</h4>
+        </div>
+        <div class="modal-body">
+          <pre data-bind="text: vaultHealthResponse()"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="vaultTokenModal" tabindex="-1" role="dialog" aria-labelledby="vaultTokenLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="vaultTokenLabel">Vault Token Information</h4>
+        </div>
+        <div class="modal-body">
+          <pre data-bind="text: vaultTokenResponse()"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="errorModalLabel">Error</h4>
+        </div>
+        <div class="modal-body">
+          Error
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="deps/jquery-1.11.3.min.js"></script>
+  <script src="deps/bootstrap-3.3.6.min.js"></script>
+  <script src="deps/knockout-3.4.0.min.js"></script>
+  <script src="vault.js"></script>
+</body>
+</html>
