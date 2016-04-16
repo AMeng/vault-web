@@ -26,6 +26,7 @@
         <ul class="nav navbar-nav">
           <li><a href="#" data-bind="click: apiHealth" data-toggle="modal" data-target="#vaultHealthModal">Health</a></li>
           <li><a href="#" data-bind="click: apiToken" data-toggle="modal" data-target="#vaultTokenModal">Token</a></li>
+          <li><a href="#" data-toggle="modal" data-target="#vaultAddModal">Add</a></li>
         </ul>
         <form data-bind="submit: reloadAll" class="navbar-form navbar-right">
           <div class="form-group">
@@ -94,6 +95,46 @@
     </div>
   </div>
 
+  <div data-bind="with: addForm" class="modal fade" id="vaultAddModal" tabindex="-1" role="dialog" aria-labelledby="vaultAddLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="vaultAddLabel">Add New Secret</h4>
+        </div>
+        <div class="modal-body">
+          <form data-bind="submit: submit">
+            <div class="form-group">
+              <label for="addFormPath" class="control-label">Path:</label>
+              <input data-bind="value: secretCollection().path" id="addFormPath" type="text" class="form-control">
+            </div>
+            <div data-bind="foreach: secretCollection().secrets">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-6">
+                    <input data-bind="value: name" type="text" class="form-control" placeholder="key">
+                  </div>
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <input data-bind="attr: {'aria-describedby': id, type: fieldType, id: id}, value: secret" class="form-control">
+                      <span class="input-group-btn">
+                        <button data-bind="text: buttonText(), click: toggleVisible(this)" class="btn btn-danger btn-hide-show" type="button"></button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <input data-bind="click: addEmptySecret" value="Add" type="button" class="btn btn-secondary">
+              <input value="Save" type="submit" class="btn btn-primary">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -102,12 +143,11 @@
           <h4 class="modal-title" id="errorModalLabel">Error</h4>
         </div>
         <div class="modal-body">
-          Error
+          <pre id="errorModalBody"></pre>
         </div>
       </div>
     </div>
   </div>
-
 
   <script src="deps/jquery-1.11.3.min.js"></script>
   <script src="deps/bootstrap-3.3.6.min.js"></script>
