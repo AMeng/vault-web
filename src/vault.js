@@ -44,6 +44,7 @@ var SecretCollection = function(path, secrets) {
   self.edit = function() {
     var collection = new SecretCollection(path, self.getSecretsAsObject());
     page.secretForm().secretCollection(collection);
+    page.secretForm().title('Edit Secret');
     page.secretForm().show();
   }
 
@@ -56,10 +57,12 @@ var SecretForm = function() {
   var self = this;
 
   self.secretCollection = ko.observable();
+  self.title = ko.observable()
 
   self.init = function() {
     self.secretCollection(new SecretCollection('secret/'));
     self.addEmptySecret();
+    self.title('Add New Secret')
   }
 
   self.show = function() {
