@@ -13,8 +13,13 @@ body {
 .secret-name {
   word-wrap: break-word;
   font-size: 20px;
+  cursor: pointer;
 }
 
 .btn-hide-show {
   width: 70px;
+}
+
+.btn-add {
+  width: 100%;
 }

@@ -33,16 +33,26 @@ var SecretCollection = function(path, secrets) {
     });
   }
 
-  self.save = function() {
-    var data = {};
+  self.getSecretsAsObject = function() {
+    var secrets = {};
     ko.utils.arrayForEach(self.secrets(), function(s) {
-      data[s.name()] = s.secret();
+      secrets[s.name()] = s.secret();
     });
-    page.apiWrite(self.path(), data);
+    return secrets;
+  }
+
+  self.edit = function() {
+    var collection = new SecretCollection(path, self.getSecretsAsObject());
+    page.secretForm().secretCollection(collection);
+    page.secretForm().show();
+  }
+
+  self.save = function() {
+    page.apiWrite(self.path(), self.getSecretsAsObject());
   }
 }
 
-var AddForm = function() {
+var SecretForm = function() {
   var self = this;
 
   self.secretCollection = ko.observable();
@@ -50,6 +60,10 @@ var AddForm = function() {
   self.init = function() {
     self.secretCollection(new SecretCollection('secret/'));
     self.addEmptySecret();
+  }
+
+  self.show = function() {
+    $('#vaultAddModal').modal('show');
   }
 
   self.submit = function() {
@@ -71,7 +85,7 @@ var Page = function() {
   self.endpoint = ko.observable(localStorage.vaultEndpoint);
   self.token = ko.observable(localStorage.vaultToken);
   self.secrets = ko.observableArray();
-  self.addForm = ko.observable(new AddForm());
+  self.secretForm = ko.observable(new SecretForm());
   self.vaultHealthResponse = ko.observable();
   self.vaultTokenResponse = ko.observable();
 
@@ -177,8 +191,6 @@ var Page = function() {
     }
   }
 }
-
-
 
 var onError = function(response) {
   $('#errorModalBody').text(toJson(response));

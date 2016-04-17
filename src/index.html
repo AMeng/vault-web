@@ -26,16 +26,16 @@
         <ul class="nav navbar-nav">
           <li><a href="#" data-bind="click: apiHealth" data-toggle="modal" data-target="#vaultHealthModal">Health</a></li>
           <li><a href="#" data-bind="click: apiToken" data-toggle="modal" data-target="#vaultTokenModal">Token</a></li>
-          <li><a href="#" data-toggle="modal" data-target="#vaultAddModal">Add</a></li>
+          <li><a href="#" data-bind="click: secretForm().init" data-toggle="modal" data-target="#vaultAddModal">Add</a></li>
         </ul>
         <form data-bind="submit: reloadAll" class="navbar-form navbar-right">
           <div class="form-group">
-            <label for="vaultEndpoint">Vault Endpoint</label>
-            <input data-bind="value: endpoint" id="vaultEndpoint" type="text" class="form-control" placeholder="Vault DNS">
+            <label for="endpoint">Endpoint</label>
+            <input data-bind="value: endpoint" id="endpoint" type="text" class="form-control" placeholder="Vault DNS">
           </div>
           <div class="form-group">
-            <label for="vaultToken">Vault Token</label>
-            <input data-bind="value: token" id="vaultToken" type="password" class="form-control" placeholder="Vault Token">
+            <label for="token">Token</label>
+            <input data-bind="value: token" id="token" type="password" class="form-control" placeholder="Vault Token">
           </div>
           <button type="submit" class="btn btn-default">Load Secrets</button>
         </form>
@@ -43,18 +43,20 @@
     </div>
   </nav>
   <div class="container">
-    <div data-bind="foreach: secrets()">
+    <div data-bind="foreach: secrets">
       <div class="row">
-        <div data-bind="text: $data.path()" class="col-md-4 secret-name"></div>
+        <div class="col-md-4 secret-name">
+          <a data-bind="text: path, click: edit"></a>
+        </div>
         <div class="col-md-8">
-          <form data-bind="foreach: $data.secrets()" class="form-horizontal">
+          <form data-bind="foreach: secrets" class="form-horizontal">
             <div class="form-group">
-              <label data-bind="attr: {for: $data.id()}, text: $data.name()" class="control-label col-sm-3"></label>
+              <label data-bind="attr: {for: id}, text: name" class="control-label col-sm-3"></label>
               <div class="col-sm-9">
                 <div class="input-group">
-                  <input data-bind="attr: {'aria-describedby': $data.id(), type: $data.fieldType(), id: $data.id()}, value: $data.secret()" class="form-control">
+                  <input data-bind="attr: {'aria-describedby': id, type: fieldType, id: id}, value: secret" class="form-control">
                   <span class="input-group-btn">
-                    <button data-bind="text: buttonText(), click: $data.toggleVisible(this)" class="btn btn-danger btn-hide-show" type="button"></button>
+                    <button data-bind="text: buttonText(), click: toggleVisible(this)" class="btn btn-secondar btn-hide-show" type="button"></button>
                   </span>
                 </div>
               </div>
@@ -95,18 +97,18 @@
     </div>
   </div>
 
-  <div data-bind="with: addForm" class="modal fade" id="vaultAddModal" tabindex="-1" role="dialog" aria-labelledby="vaultAddLabel">
+  <div data-bind="with: secretForm" class="modal fade" id="vaultAddModal" tabindex="-1" role="dialog" aria-labelledby="vaultAddLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="vaultAddLabel">Add New Secret</h4>
-        </div>
-        <div class="modal-body">
-          <form data-bind="submit: submit">
+        <form data-bind="submit: submit">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="vaultAddLabel">Add New Secret</h4>
+          </div>
+          <div class="modal-body">
             <div class="form-group">
-              <label for="addFormPath" class="control-label">Path:</label>
-              <input data-bind="value: secretCollection().path" id="addFormPath" type="text" class="form-control">
+              <label for="secretFormPath" class="control-label">Path:</label>
+              <input data-bind="value: secretCollection().path" id="secretFormPath" type="text" class="form-control">
             </div>
             <div data-bind="foreach: secretCollection().secrets">
               <div class="form-group">
@@ -118,19 +120,20 @@
                     <div class="input-group">
                       <input data-bind="attr: {'aria-describedby': id, type: fieldType, id: id}, value: secret" class="form-control">
                       <span class="input-group-btn">
-                        <button data-bind="text: buttonText(), click: toggleVisible(this)" class="btn btn-danger btn-hide-show" type="button"></button>
+                        <button data-bind="text: buttonText(), click: toggleVisible(this)" class="btn btn-secondar btn-hide-show" type="button"></button>
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="form-group">
-              <input data-bind="click: addEmptySecret" value="Add" type="button" class="btn btn-secondary">
-              <input value="Save" type="submit" class="btn btn-primary">
-            </div>
-          </form>
-        </div>
+            <input data-bind="click: addEmptySecret" value="+" type="button" class="btn btn-secondary btn-add">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <input value="Save" type="submit" class="btn btn-primary">
+          </div>
+        </form>
       </div>
     </div>
   </div>
