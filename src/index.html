@@ -123,7 +123,7 @@
                   </div>
                   <div class="col-md-6">
                     <div class="input-group">
-                      <input data-bind="attr: {type: fieldType}, value: secret" class="form-control">
+                      <input data-bind="attr: {'aria-describedby': id, type: fieldType, id: id}, value: secret" class="form-control">
                       <span class="input-group-btn">
                         <button data-bind="text: buttonText(), click: toggleVisible(this)" class="btn btn-secondar btn-hide-show" type="button"></button>
                       </span>

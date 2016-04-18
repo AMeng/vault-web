@@ -5,6 +5,10 @@ var Secret = function(name, secret, path) {
   self.secret = ko.observable(secret);
   self.visible = ko.observable(false);
 
+  self.id = ko.computed(function() {
+    return path + '/' + self.name();
+  });
+
   self.fieldType = ko.computed(function() {
     return self.visible() ? 'password' : 'text';
   });
@@ -27,7 +31,7 @@ var SecretCollection = function(path, secrets) {
   if (secrets) {
     Object.keys(secrets).forEach(function(key, index) {
       if (key !== 'lease_duration') {
-        self.secrets.push(new Secret(key, secrets[key]));
+        self.secrets.push(new Secret(key, secrets[key], path));
       }
     });
   }
