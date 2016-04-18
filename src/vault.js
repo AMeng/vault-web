@@ -1,7 +1,7 @@
 var Secret = function(name, secret, path) {
   var self = this;
-
   self.id = ko.observable(path + '/' + name);
+
   self.name = ko.observable(name);
   self.secret = ko.observable(secret);
   self.visible = ko.observable(false);
@@ -43,13 +43,16 @@ var SecretCollection = function(path, secrets) {
 
   self.edit = function() {
     var collection = new SecretCollection(path, self.getSecretsAsObject());
-    page.secretForm().secretCollection(collection);
-    page.secretForm().title('Edit Secret');
+    page.secretForm().setupEdit(collection);
     page.secretForm().show();
   }
 
   self.save = function() {
     page.apiWrite(self.path(), self.getSecretsAsObject());
+  }
+
+  self.deleteCollection = function() {
+    page.apiDelete(self.path());
   }
 }
 
@@ -57,29 +60,49 @@ var SecretForm = function() {
   var self = this;
 
   self.secretCollection = ko.observable();
-  self.title = ko.observable()
+  self.title = ko.observable();
+  self.canDelete = ko.observable();
 
-  self.init = function() {
+  self.setupNew = function() {
     self.secretCollection(new SecretCollection('secret/'));
     self.addEmptySecret();
-    self.title('Add New Secret')
+    self.title('Add New Secret');
+    self.canDelete(false);
+  }
+
+  self.setupEdit = function(collection) {
+    self.secretCollection(collection);
+    self.title('Edit Secret');
+    self.canDelete(true);
   }
 
   self.show = function() {
     $('#vaultAddModal').modal('show');
   }
 
-  self.submit = function() {
+  self.hide = function() {
     $('#vaultAddModal').modal('hide');
-    self.secretCollection().save();
-    self.init();
   }
 
-  self.addEmptySecret = function() {
+  self.submit = function() {
+    self.hide();
+    self.secretCollection().save();
+    self.setupNew();
+  }
+
+  self.deleteSecret = function() {
+    if (confirm('Really delete ' + self.secretCollection().path() + ' ?')) {
+      self.hide();
+      self.secretCollection().deleteCollection();
+      self.setupNew();
+    }
+  }
+
+  self.addEmptySecret = function(collection) {
     self.secretCollection().secrets.push(new Secret('', ''));
   }
 
-  self.init();
+  self.setupNew();
 }
 
 var Page = function() {
@@ -109,7 +132,7 @@ var Page = function() {
     return {'X-Vault-Token': self.token()};
   }
 
-  self.postHeaders = function() {
+  self.getJsonHeaders = function() {
     var headers = self.getHeaders();
     headers['Content-Type'] = 'application/json';
     return headers;
@@ -160,7 +183,17 @@ var Page = function() {
       url: self.getUrl(path),
       data: toJson(data),
       method: 'POST',
-      headers: self.postHeaders(),
+      headers: self.getJsonHeaders(),
+      success: self.reloadAll,
+      error: onError
+    });
+  }
+
+  self.apiDelete = function(path) {
+    $.ajax({
+      url: self.getUrl(path),
+      method: 'DELETE',
+      headers: self.getHeaders(),
       success: self.reloadAll,
       error: onError
     });

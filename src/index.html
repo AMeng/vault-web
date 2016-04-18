@@ -131,6 +131,9 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <!-- ko if: canDelete -->
+            <input data-bind="click: deleteSecret" type="button" value="Delete" class="btn btn-danger">
+            <!-- /ko -->
             <input value="Save" type="submit" class="btn btn-primary">
           </div>
         </form>
