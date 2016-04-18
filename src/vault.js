@@ -1,6 +1,5 @@
 var Secret = function(name, secret, path) {
   var self = this;
-  self.id = ko.observable(path + '/' + name);
 
   self.name = ko.observable(name);
   self.secret = ko.observable(secret);
@@ -49,6 +48,10 @@ var SecretCollection = function(path, secrets) {
 
   self.save = function() {
     page.apiWrite(self.path(), self.getSecretsAsObject());
+  }
+
+  self.removeSecret = function(secret) {
+    self.secrets.splice(self.secrets().indexOf(secret), 1);
   }
 
   self.deleteCollection = function() {

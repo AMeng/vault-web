@@ -115,12 +115,15 @@
             <div data-bind="foreach: secretCollection().secrets">
               <div class="form-group">
                 <div class="row">
-                  <div class="col-md-6">
+                  <div class="col-md-1">
+                    <button data-bind="click: $parent.secretCollection().removeSecret" type="button" class="btn close btn-remove-secret" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  </div>
+                  <div class="col-md-5">
                     <input data-bind="value: name" type="text" class="form-control" placeholder="key">
                   </div>
                   <div class="col-md-6">
                     <div class="input-group">
-                      <input data-bind="attr: {'aria-describedby': id, type: fieldType, id: id}, value: secret" class="form-control">
+                      <input data-bind="attr: {type: fieldType}, value: secret" class="form-control">
                       <span class="input-group-btn">
                         <button data-bind="text: buttonText(), click: toggleVisible(this)" class="btn btn-secondar btn-hide-show" type="button"></button>
                       </span>
