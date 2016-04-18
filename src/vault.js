@@ -123,6 +123,10 @@ var Page = function() {
     localStorage.vaultTokenResponse = text;
   });
 
+  self.sortByPath = function(left, right) {
+    return left.path() > right.path() ? 1 : -1;
+  }
+
   self.reloadAll = function() {
     self.secrets([]);
     self.apiList('secret/');
@@ -239,3 +243,7 @@ var toJson = function(object) {
 
 var page = new Page();
 ko.applyBindings(page);
+
+if (page.endpoint() && page.token()) {
+  page.reloadAll();
+}
