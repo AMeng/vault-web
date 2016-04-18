@@ -6,20 +6,14 @@ body {
   color: white;
 }
 
-.secret-input-group {
-  padding: 10px;
-}
-
-.secret-name {
-  word-wrap: break-word;
-  font-size: 20px;
-  cursor: pointer;
-}
-
 .btn-hide-show {
   width: 70px;
 }
 
 .btn-add {
   width: 100%;
+}
+
+.pointer {
+  cursor: pointer;
 }
