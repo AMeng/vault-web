@@ -110,7 +110,7 @@
           <div class="modal-body">
             <div class="form-group">
               <label for="secretFormPath" class="control-label">Path:</label>
-              <input data-bind="value: secretCollection().path" id="secretFormPath" type="text" class="form-control">
+              <input data-bind="value: secretCollection().path, attr: {readonly: editMode}" id="secretFormPath" type="text" class="form-control">
             </div>
             <div data-bind="foreach: secretCollection().secrets">
               <div class="form-group">
@@ -133,7 +133,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <!-- ko if: canDelete -->
+            <!-- ko if: editMode -->
             <input data-bind="click: deleteSecret" type="button" value="Delete" class="btn btn-danger">
             <!-- /ko -->
             <input value="Save" type="submit" class="btn btn-primary">

@@ -61,19 +61,19 @@ var SecretForm = function() {
 
   self.secretCollection = ko.observable();
   self.title = ko.observable();
-  self.canDelete = ko.observable();
+  self.editMode = ko.observable();
 
   self.setupNew = function() {
     self.secretCollection(new SecretCollection('secret/'));
     self.addEmptySecret();
     self.title('Add New Secret');
-    self.canDelete(false);
+    self.editMode(false);
   }
 
   self.setupEdit = function(collection) {
     self.secretCollection(collection);
     self.title('Edit Secret');
-    self.canDelete(true);
+    self.editMode(true);
   }
 
   self.show = function() {
