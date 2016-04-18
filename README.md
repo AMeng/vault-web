@@ -6,5 +6,5 @@ A web interface for [Hashicorp Vault](https://www.vaultproject.io). Supports bas
 
 ---
 
-Supported backends:
- * generic
+Supported Secret Backends:
+ * [Generic](https://www.vaultproject.io/docs/secrets/generic/)
