@@ -40,7 +40,12 @@
     </div>
   </nav>
   <div class="container">
-    <form class="form-horizontal">
+    <div data-bind="visible: token() ? true : false">
+        Vault: <span data-bind="text: endpoint()"></span><br />
+        Logged in as: <span data-bind="text: getTokenInfo()"></span><br />
+        <a href="#" data-bind="click: logout">Logout</a> (does not revoke the token in Vault).
+    </div>
+    <form class="form-horizontal" data-bind="visible: token() ? false : true">
       <div class="form-group">
         <label for="endpoint" class="col-sm-2 control-label">Endpoint</label>
         <div class="col-sm-10">
