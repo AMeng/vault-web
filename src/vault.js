@@ -121,14 +121,25 @@ var Page = function() {
   self.secretForm = ko.observable(new SecretForm());
   self.vaultHealthResponse = ko.observable();
   self.vaultTokenResponse = ko.observable();
+  self.vaultTokenDisplayName = ko.observable();
 
   self.endpoint.subscribe(function (text) {
     localStorage.vaultEndpoint = text;
   });
 
   self.token.subscribe(function (text) {
-    localStorage.vaultTokenResponse = text;
+    localStorage.vaultToken = text;
   });
+
+  self.logout = function() {
+      //too destructive...
+      //self.apiTokenRevoke();
+      localStorage.vaultTokenResponse = "";
+      localStorage.vaultToken = "";
+      self.vaultTokenDisplayName("");
+      self.token("");
+      self.secrets([]);
+  }
 
   self.sortByPath = function(left, right) {
     return left.path() > right.path() ? 1 : -1;
@@ -137,6 +148,7 @@ var Page = function() {
   self.reloadAll = function() {
     self.secrets([]);
     self.apiList('secret/');
+    self.getTokenDisplayName();
   }
 
   self.getHeaders = function() {
@@ -168,6 +180,22 @@ var Page = function() {
       success: self.apiTokenSuccess,
       error: onError
     });
+  }
+
+  self.apiTokenRevoke = function() {
+    $.ajax({
+      url: self.getUrl('auth/token/revoke-self'),
+      method: 'POST',
+      headers: self.getHeaders(),
+      success: self.apiTokenRevokeSuccess,
+      error: onError
+    });
+  }
+
+  self.getTokenDisplayName = function() {
+    if (!self.vaultTokenDisplayName()) {
+        self.apiToken();
+    }
   }
 
   self.apiList = function(path) {
@@ -216,6 +244,13 @@ var Page = function() {
 
   self.apiTokenSuccess = function(data) {
     self.vaultTokenResponse(toJson(data.data));
+    var t = JSON.parse(self.vaultTokenResponse());
+    var name = t.display_name;
+    self.vaultTokenDisplayName(name);
+  }
+
+  self.apiTokenRevokeSuccess = function(data) {
+    return true;
   }
 
   self.apiListSuccess = function(path) {

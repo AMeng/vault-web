@@ -31,8 +31,12 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">System <span class="caret"></span></a>
           <ul class="dropdown-menu">
+            <li class="dropdown-header" data-bind="text: vaultTokenDisplayName()">-</li>
+            <li role="separator" class="divider"></li>
             <li><a href="#" data-bind="click: apiHealth" data-toggle="modal" data-target="#vaultHealthModal">Health Check</a></li>
             <li><a href="#" data-bind="click: apiToken" data-toggle="modal" data-target="#vaultTokenModal">Token Information</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#" data-bind="click: logout">Logout</a></li>
           </ul>
         </li>
       </ul>
@@ -40,7 +44,7 @@
     </div>
   </nav>
   <div class="container">
-    <form class="form-horizontal">
+    <form class="form-horizontal" data-bind="submit: reloadAll, visible: !vaultTokenDisplayName()">
       <div class="form-group">
         <label for="endpoint" class="col-sm-2 control-label">Endpoint</label>
         <div class="col-sm-10">
@@ -51,6 +55,11 @@
         <label for="token" class="col-sm-2 control-label">Token</label>
         <div class="col-sm-10">
           <input data-bind="value: token" type="password" class="form-control" id="token">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <input value="Login" type="submit" class="btn btn-primary">
         </div>
       </div>
     </form>
@@ -79,6 +88,8 @@
           <h4 class="modal-title" id="vaultHealthLabel">Vault System Health</h4>
         </div>
         <div class="modal-body">
+          <label for="vaultHealthEndpointLabel">Endpoint:</label>
+          <span data-bind="text: endpoint()" id="vaultHealthEndpointLabel">-</span>
           <pre data-bind="text: vaultHealthResponse()"></pre>
         </div>
       </div>
