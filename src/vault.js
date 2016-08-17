@@ -121,6 +121,7 @@ var Page = function() {
   self.secretForm = ko.observable(new SecretForm());
   self.vaultHealthResponse = ko.observable();
   self.vaultTokenResponse = ko.observable();
+  self.vaultTokenDisplayName = ko.observable();
 
   self.endpoint.subscribe(function (text) {
     localStorage.vaultEndpoint = text;
@@ -135,6 +136,7 @@ var Page = function() {
       //self.apiTokenRevoke();
       localStorage.vaultTokenResponse = "";
       localStorage.vaultToken = "";
+      self.vaultTokenDisplayName("");
       self.token("");
       self.secrets([]);
   }
@@ -146,6 +148,7 @@ var Page = function() {
   self.reloadAll = function() {
     self.secrets([]);
     self.apiList('secret/');
+    self.getTokenDisplayName();
   }
 
   self.getHeaders = function() {
@@ -189,15 +192,10 @@ var Page = function() {
     });
   }
 
-  self.getTokenInfo = function() {
-    if (self.token()) self.apiToken();
-    if (self.vaultTokenResponse()) {
-        var t = JSON.parse(self.vaultTokenResponse());
-        var id = t.id;
-        var name = t.display_name;
-        return name + '@' + id;
+  self.getTokenDisplayName = function() {
+    if (!self.vaultTokenDisplayName()) {
+        self.apiToken();
     }
-    return 'none@none';
   }
 
   self.apiList = function(path) {
@@ -246,6 +244,9 @@ var Page = function() {
 
   self.apiTokenSuccess = function(data) {
     self.vaultTokenResponse(toJson(data.data));
+    var t = JSON.parse(self.vaultTokenResponse());
+    var name = t.display_name;
+    self.vaultTokenDisplayName(name);
   }
 
   self.apiTokenRevokeSuccess = function(data) {
